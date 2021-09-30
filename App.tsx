@@ -1,60 +1,41 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 
 import CameraPage from './components/camera/camera.screen';
 
-type RootStackParamList = {
-  Home: undefined;
-  Details: undefined;
-  Camera: undefined;
-};
 
-type ScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-function HomeScreen({ navigation }: ScreenProps) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      />
-      <Button
-        title="Go to Camera"
-        onPress={() => navigation.navigate('Camera')}
-      />
-    </View>
-  );
-}
+const { width, height } = Dimensions.get('screen');
 
 function DetailsScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
+    <View
+      style={{
+        width, height,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Text>Swipe Left to Camera Screen</Text>
     </View>
   );
 }
 
 function CameraScreen() {
   return (
-    <CameraPage />
+    <CameraPage
+      style={{
+        width, height,
+      }}
+    />
   )
 }
 
-const Stack = createNativeStackNavigator();
-
-function App() {
+export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-        <Stack.Screen name="Camera" component={CameraScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    <ScrollView horizontal={true} pagingEnabled={true} style={{flex: 1}}>
+      <CameraScreen></CameraScreen>
+      <DetailsScreen></DetailsScreen>
+    </ScrollView>
+  )
 }
-
-export default App;

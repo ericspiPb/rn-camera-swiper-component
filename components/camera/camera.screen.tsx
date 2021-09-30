@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleProp, ViewStyle } from 'react-native';
 import { Camera } from 'expo-camera';
-import { CameraType, FlashMode } from 'expo-camera/build/Camera.types';
+import { CameraCapturedPicture, CameraType, FlashMode, VideoCodec } from 'expo-camera/build/Camera.types';
 import { Audio } from 'expo-av';
 
 import Toolbar from './camera.toolbar';
@@ -9,7 +9,27 @@ import Gallery from './camera.gallery';
 
 import styles from './camera.screen.styles';
 
-export default class CameraPage extends React.Component {
+export interface CameraProps {
+  style?: StyleProp<ViewStyle>;
+}
+
+export interface CameraState {
+  hasCameraPermission: boolean | null;
+  flashMode: FlashMode;
+  cameraType: CameraType;
+  captures?:
+    | Array<CameraCapturedPicture>
+    | Array<
+        | {
+            uri: string;
+            codec?: VideoCodec;
+          }
+        | undefined
+      >;
+  capturing: boolean;
+}
+
+export default class CameraScreen extends React.Component<CameraProps, CameraState> {
   camera: Camera | null = null;
 
   state = {
@@ -20,12 +40,16 @@ export default class CameraPage extends React.Component {
     capturing: false,
   };
 
+  constructor(public props: CameraProps) {
+    super(props);
+  }
+
   setFlashMode = (flashMode: FlashMode) => this.setState({ flashMode });
   setCameraType = (cameraType: CameraType) => {
     this.setState({ cameraType });
-  }
+  };
 
-  handleCaptureIn = () => this.setState({ caturing: true });
+  handleCaptureIn = () => this.setState({ capturing: true });
   handleCaptureOut = () => {
     if (this.state.capturing) this.camera?.stopRecording();
   };
@@ -57,7 +81,7 @@ export default class CameraPage extends React.Component {
     }
 
     return (
-      <View>
+      <View style={this.props?.style}>
         <Camera type={cameraType} flashMode={flashMode} style={styles.preview} ref={(camera) => (this.camera = camera)} />
         {captures.length > 0 && <Gallery captures={captures} />}
         <Toolbar

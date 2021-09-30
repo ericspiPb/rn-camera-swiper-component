@@ -7,7 +7,7 @@ export default StyleSheet.create({
     width: winWidth,
     height: 100,
     position: 'absolute',
-    top: winHeight - 200,
+    bottom: 0,
   },
   alignCenter: {
     flex: 1,
